@@ -5,13 +5,13 @@ A utility command to start other commands in the background.
 
 If one of them dies with an error, all of them are terminated.
 
-`Ctrl-C` terminates them as well.
+``Ctrl-C`` terminates them as well.
 
 
 Why?
 ----
 
-This program relieves you of ugly tasks like implementing `trap`s in shell scripts or fighting against subprocess absorbing `Ctrl-C` control.
+This program relieves you of ugly tasks like implementing ``trap`` in shell scripts or fighting against subprocess absorbing ``Ctrl-C`` control.
 
 License
 -------
