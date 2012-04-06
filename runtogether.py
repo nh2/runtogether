@@ -33,7 +33,7 @@ def killtree(pid, signal):
 	subprocess.call(['bash', '-c', script])
 
 
-def runtogether(commands, kill_timeout=3, shutdown_callback=None):
+def runtogether(commands, kill_timeout=3, shutdown_callback=None, poll_interval=0.2):
 	"""
 	Runs the given commands in subprocesses.
 	Terminates all of them as soon as one of them terminates.
@@ -85,4 +85,4 @@ def runtogether(commands, kill_timeout=3, shutdown_callback=None):
 				procs.remove(proc)
 				print("Child with pid %d terminated with exit code %d!" % (proc.pid, ret))
 				shutdown(ret)
-		time.sleep(0.2)
+		time.sleep(poll_interval)
