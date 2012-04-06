@@ -42,7 +42,6 @@ def runtogether(commands, kill_timeout=3, shutdown_callback=None, poll_interval=
 	"""
 
 	procs = []
-
 	def shutdown(exit_code):
 		print("Asking all child processes to terminate...")
 
@@ -63,17 +62,21 @@ def runtogether(commands, kill_timeout=3, shutdown_callback=None, poll_interval=
 	signal.signal(signal.SIGTERM, lambda signum, stack_frame: shutdown(130))
 	signal.signal(signal.SIGINT, lambda signum, stack_frame: shutdown(130))
 
+	pid_commands = {}
+
 	# Spawn subprocesses
 	for command in commands:
 		# Try to prevent children from capturing Ctrl-C with os.setsid
+		print("Launching: %s" % command)
 		try:
 			proc = subprocess.Popen(shlex.split(command), preexec_fn=os.setsid)
+			pid_commands[proc.pid] = command
 		except:
 			import traceback
 			# Don't hide the exception
 			traceback.print_exc()
 			shutdown(1)
-		print("Launched child with pid %d: %s" % (proc.pid, command))
+		print("Launched as pid %d: %s" % (proc.pid, command))
 		procs.append(proc)
 
 	while True:
@@ -82,6 +85,7 @@ def runtogether(commands, kill_timeout=3, shutdown_callback=None, poll_interval=
 			if ret is None:
 				continue
 			else:
-				print("Child with pid %d terminated with exit code %d!" % (proc.pid, ret))
+				print("Child with pid %d terminated with exit code %d: %s"
+					% (proc.pid, ret, pid_commands[proc.pid]))
 				shutdown(ret)
 		time.sleep(poll_interval)
