@@ -76,13 +76,12 @@ def runtogether(commands, kill_timeout=3, shutdown_callback=None, poll_interval=
 		print("Launched child with pid %d: %s" % (proc.pid, command))
 		procs.append(proc)
 
-	while procs:
+	while True:
 		for proc in procs:
 			ret = proc.poll()
 			if ret is None:
 				continue
 			else:
-				procs.remove(proc)
 				print("Child with pid %d terminated with exit code %d!" % (proc.pid, ret))
 				shutdown(ret)
 		time.sleep(poll_interval)
