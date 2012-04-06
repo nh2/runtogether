@@ -10,6 +10,7 @@ import signal
 import subprocess
 import sys
 import time
+import atexit
 
 
 def runtogether(commands, kill_timeout=3, shutdown_callback=None):
@@ -38,6 +39,8 @@ def runtogether(commands, kill_timeout=3, shutdown_callback=None):
 			shutdown_callback()
 		sys.exit(1)
 
+	atexit.register(shutdown)
+
 	signal.signal(signal.SIGTERM, lambda signum, stack_frame: shutdown())
 	signal.signal(signal.SIGINT, lambda signum, stack_frame: shutdown())
 
@@ -56,5 +59,5 @@ def runtogether(commands, kill_timeout=3, shutdown_callback=None):
 				procs.remove(proc)
 			if ret != 0:
 				print("Child terminated with exit code!")
-				shutdown()
+				sys.exit(1)
 		time.sleep(0.2)
