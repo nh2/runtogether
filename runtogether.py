@@ -12,7 +12,7 @@ import sys
 import time
 
 
-def runtogether(commands, kill_timeout=3):
+def runtogether(commands, kill_timeout=3, shutdown_callback=None):
 	"""
 	Runs the given commands in subprocesses.
 	Terminates all of them as soon as one of them returns a non-0 exit code.
@@ -34,6 +34,8 @@ def runtogether(commands, kill_timeout=3):
 					proc.kill()
 					proc.wait()
 		print("done.")
+		if shutdown_callback is not None:
+			shutdown_callback()
 		sys.exit(1)
 
 	signal.signal(signal.SIGTERM, lambda signum, stack_frame: shutdown())
