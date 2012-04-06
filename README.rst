@@ -3,7 +3,9 @@ runtogether.py
 
 A utility command to start other commands in the background.
 
-If one of them dies with an error, all of them are terminated.
+If one of them dies, all of them are terminated.
+
+The exit code is set to the exit code of the first terminated process.
 
 ``Ctrl-C`` terminates them as well.
 

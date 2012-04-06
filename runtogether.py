@@ -16,8 +16,9 @@ import atexit
 def runtogether(commands, kill_timeout=3, shutdown_callback=None):
 	"""
 	Runs the given commands in subprocesses.
-	Terminates all of them as soon as one of them returns a non-0 exit code.
-	Also terminates them on Ctrl-C.
+	Terminates all of them as soon as one of them terminates.
+	The exit code is set to the exit code of the first terminated process.
+	Also terminates them on Ctrl-C (with return code 130).
 	"""
 
 	procs = []
@@ -37,7 +38,6 @@ def runtogether(commands, kill_timeout=3, shutdown_callback=None):
 		print("done.")
 		if shutdown_callback is not None:
 			shutdown_callback()
-		sys.exit(1)
 
 	atexit.register(shutdown)
 
@@ -57,7 +57,6 @@ def runtogether(commands, kill_timeout=3, shutdown_callback=None):
 				continue
 			else:
 				procs.remove(proc)
-			if ret != 0:
-				print("Child terminated with exit code!")
-				sys.exit(1)
+				print("Child terminated with exit code %d!" % ret)
+				sys.exit(ret)
 		time.sleep(0.2)
